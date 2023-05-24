@@ -1,10 +1,15 @@
 import './login.css';
 import {useState} from 'react';
+import LoginService from '../services/loginService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [errorMessages, setErrorMessages] = useState({});
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
+    const navigate = useNavigate();
 
     const renderErrorMessage = (name) =>
         name === errorMessages.name && (
@@ -19,6 +24,18 @@ const Login = () => {
         console.log(password);
         //validate and call API endpoint
         console.log(process.env.REACT_APP_AUTH_ENDPOINT);
+        LoginService(username, password)
+            .then((response) => {
+                console.log(response.status, response.data.token);
+                localStorage.setItem("authToken", response.data.token);
+
+            })
+            .catch((error) => {
+                console.log(error);
+                toast("An error occured")
+            });
+
+            navigate("/home");
       };
 
     return(
@@ -58,9 +75,18 @@ const Login = () => {
                 <p className="forgot-password text-right mt-2">
                     Forgot <a href="#">password?</a>
                 </p>
-                </div>
+                </div>                
             </form>
-        
+            <ToastContainer position="bottom-center"
+                    autoClose={5000}
+                    hideProgressBar={true}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light" />
         </div>
     )
 };
