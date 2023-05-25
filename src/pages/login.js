@@ -1,15 +1,17 @@
 import './login.css';
-import {useState} from 'react';
-import LoginService from '../services/loginService';
+import {useState, useContext} from 'react';
+import { LoginService } from '../services/loginService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
+import UserAuthContext from '../context/userAuthContext';
 
 const Login = () => {
     const [errorMessages, setErrorMessages] = useState({});
     const [username, setUserName] = useState();
     const [password, setPassword] = useState();
     const navigate = useNavigate();
+    const [userAuthToken, setUserAuthToken] = useContext(UserAuthContext);
 
     const renderErrorMessage = (name) =>
         name === errorMessages.name && (
@@ -22,20 +24,16 @@ const Login = () => {
 
         console.log(username);
         console.log(password);
-        //validate and call API endpoint
-        console.log(process.env.REACT_APP_AUTH_ENDPOINT);
-        LoginService(username, password)
-            .then((response) => {
-                console.log(response.status, response.data.token);
-                localStorage.setItem("authToken", response.data.token);
 
-            })
-            .catch((error) => {
-                console.log(error);
-                toast("An error occured")
-            });
-
+        console.log('Auth.signIn calling');
+        LoginService.SignIn(username, password).then(result => {
+            setUserAuthToken(result.username);
+            console.log(result.username);
             navigate("/home");
+        })
+        .catch(error => {
+            console.log(error);
+        })
       };
 
     return(

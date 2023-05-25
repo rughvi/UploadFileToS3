@@ -1,15 +1,10 @@
-import axios from 'axios';
-const AuthAPIEndpoint = process.env.REACT_APP_AUTH_ENDPOINT
-const LoginService = (username, password) => {
-    const userData = {
-        email: username,
-        password: password
-      };
-    //   axios.post("https://reqres.in/api/login", userData).then((response) => {
-    //     console.log(response.status, response.data.token);
-    //   });
+import {Amplify,  Auth } from "aws-amplify";
 
-      return axios.post(AuthAPIEndpoint, userData);
+
+const SignIn = (username, password) => {
+      return Auth.signIn(username, password);
 }
 
-export default LoginService;
+export const LoginService = {
+  SignIn
+}
