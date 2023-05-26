@@ -10,4 +10,5 @@ export const AwsConfigAuth = {
         secure: true,
     },
     authenticationFlowType: "USER_SRP_AUTH",
+    identityPoolId: process.env.REACT_APP_AUTH_IDENTITY_POOL_ID
 };

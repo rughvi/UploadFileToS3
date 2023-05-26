@@ -28,7 +28,8 @@ const Login = () => {
         console.log('Auth.signIn calling');
         LoginService.SignIn(username, password).then(result => {
             setUserAuthToken(result.username);
-            console.log(result.username);
+            let idToken = result.signInUserSession.idToken.jwtToken;
+            LoginService.getCognitoIdentityCredentials(idToken);
             navigate("/home");
         })
         .catch(error => {

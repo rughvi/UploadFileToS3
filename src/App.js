@@ -4,6 +4,7 @@ import createRoutes from './routing/routes';
 import {Amplify,  Auth } from "aws-amplify";
 import { AwsConfigAuth } from "./config/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { LoginService } from './services/loginService';
 
 import UserAuthContext from './context/userAuthContext';
 
@@ -18,12 +19,15 @@ function App() {
         Auth.currentAuthenticatedUser()
             .then((result) => {
               console.log(result.username);
-              setUserAuthToken(result.username);
-                setIsAppLoading(false);
+              setUserAuthToken(result.username);              
+              let idToken = result.signInUserSession.idToken.jwtToken;
+              LoginService.getCognitoIdentityCredentials(idToken);
+              setIsAppLoading(false);
             })
-            .catch(() => {
+            .catch(error => {
+              console.log(error);
               console.log("No current user");
-                setIsAppLoading(false);
+              setIsAppLoading(false);
             });
     }, []);
 
